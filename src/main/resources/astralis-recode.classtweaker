@@ -1,0 +1,7 @@
+classTweaker v1 official
+accessible field net/minecraft/client/player/LocalPlayer yRotLast F
+accessible field net/minecraft/client/player/LocalPlayer xRotLast F
+accessible field net/minecraft/server/packs/repository/FolderRepositorySource folder Ljava/nio/file/Path;
+accessible field net/minecraft/server/packs/repository/FolderRepositorySource packType Lnet/minecraft/server/packs/PackType;
+accessible field net/minecraft/server/packs/repository/FolderRepositorySource packSource Lnet/minecraft/server/packs/repository/PackSource;
+accessible field net/minecraft/server/packs/repository/FolderRepositorySource validator Lnet/minecraft/world/level/validation/DirectoryValidator;

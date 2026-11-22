@@ -1,0 +1,11 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "astralis-recode:materialdesignicons.ttf",
+      "shift": [0, 0],
+      "size": 10,
+      "oversample": 2
+    }
+  ]
+}

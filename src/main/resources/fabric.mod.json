@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "astralis-recode",
+  "version": "${version}",
+  "name": "Astralis-Recode",
+  "description": "Astralis 2.2 for Minecraft 26.2.",
+  "authors": ["Kawase", "Ihasedich", "Badaiim", "Cioc"],
+  "license": "CC0-1.0",
+  "icon": "assets/astralis-recode/icon.png",
+  "environment": "client",
+  "entrypoints": {},
+  "mixins": ["astralis-recode.mixins.json"],
+  "accessWidener": "astralis-recode.classtweaker",
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

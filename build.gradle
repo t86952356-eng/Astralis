@@ -1,0 +1,143 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+base.archivesName = project.archives_base_name
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    javaFormatter {
+        canBeConsumed = false
+        transitive = false
+    }
+}
+
+loom {
+    accessWidenerPath = file('src/main/resources/astralis-recode.classtweaker')
+    mods {
+        'astralis-recode' {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+// The source uses Mojang's unobfuscated 26.2 names. No mappings
+// dependency or remapping plugin is used for this Minecraft generation.
+def bundledLibraries = new JsonSlurper().parse(file('libs/manifest.json'))
+def includedLibraries = bundledLibraries.findAll { it.include }
+
+dependencies {
+    javaFormatter 'com.google.googlejavaformat:google-java-format:1.37.0:all-deps'
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    // These are the exact third-party libraries that Astralis 2.2 ships,
+    // including every nested dependency.
+    // Nested dependencies are available for compilation, but only their parent
+    // jars are embedded again, preserving Fabric's nested dependency tree.
+    // Minecraft supplies Gson 2.14.0; the bundled nested copy is 2.13.2.
+    // The bundled nested copy adds fabric.mod.json; placing it ahead of Minecraft's Gson
+    // makes Loader's early game-library resource lookup hide the dev mod list.
+    // Keep the nested archive untouched in the distributed dependency tree.
+    implementation fileTree(dir: 'libs/exact', include: '*.jar', exclude: 'gson-2.13.2.jar')
+
+    // Optional integrations must never install an incompatible renderer at runtime.
+    compileOnly fileTree(dir: 'libs/compile-only', include: '*.jar')
+    compileOnly 'org.projectlombok:lombok:1.18.42'
+    compileOnly 'org.jetbrains:annotations:26.0.2'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 25
+    // Classes with $ in their names must be compiled together so javac's synthetic
+    // helpers cannot reuse their names during a partial recompilation.
+    options.incremental = false
+    // The mixins already use the game's official names. Their annotation
+    // strings are preserved; a second annotation-processing pass is unnecessary.
+    options.compilerArgs += ['-proc:none']
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.file 'libs/manifest.json'
+    filesMatching('fabric.mod.json') {
+        expand version: project.version
+    }
+    doLast {
+        def metadataFile = file("${destinationDir}/fabric.mod.json")
+        def metadata = new JsonSlurper().parse(metadataFile)
+        metadata.jars = includedLibraries.collect { [file: "META-INF/jars/${it.file}"] }
+        metadataFile.setText(JsonOutput.prettyPrint(JsonOutput.toJson(metadata)) + '\n', 'UTF-8')
+    }
+}
+
+// Formatting tools are separate from the mod's compile/runtime dependencies.
+['formatJava': false, 'checkJavaFormat': true].each { taskName, checkOnly ->
+    tasks.register(taskName, JavaExec) {
+        group = checkOnly ? 'verification' : 'formatting'
+        description = checkOnly ? 'Check Java source formatting.' : 'Format Java sources and remove unused imports.'
+        javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+        classpath = configurations.javaFormatter
+        mainClass = 'com.google.googlejavaformat.java.Main'
+        jvmArgs(['api', 'file', 'parser', 'tree', 'util', 'code'].collect {
+            "--add-exports=jdk.compiler/com.sun.tools.javac.${it}=ALL-UNNAMED"
+        })
+        doFirst {
+            def argumentFile = layout.buildDirectory.file("formatting/${taskName}.args").get().asFile
+            argumentFile.parentFile.mkdirs()
+            def formatterArgs = ['--aosp', '--skip-reflowing-long-strings', '--skip-javadoc-formatting']
+            formatterArgs.addAll(checkOnly ? ['--dry-run', '--set-exit-if-changed'] : ['--replace'])
+            formatterArgs.addAll(sourceSets.main.allJava.files.sort().collect { it.absolutePath.replace('\\', '/') })
+            argumentFile.setText(formatterArgs.join('\n') + '\n', 'UTF-8')
+            args = ["@${argumentFile.absolutePath}"]
+        }
+    }
+}
+
+// These already contain their Fabric metadata. Copy them unchanged:
+// Loom's Maven include resolution cannot assign identities to raw file artifacts.
+tasks.named('jar', Jar) {
+    includedLibraries.each { library ->
+        from("libs/exact/${library.file}") {
+            into 'META-INF/jars'
+        }
+    }
+}
+
+// Keep development launches and browser caches inside this project.
+tasks.named('runClient', JavaExec) {
+    def isolatedHome = layout.projectDirectory.dir('run/home').asFile
+    def isolatedTemp = layout.projectDirectory.dir('run/tmp').asFile
+    def isolatedLocal = new File(isolatedHome, 'AppData/Local')
+    def isolatedRoaming = new File(isolatedHome, 'AppData/Roaming')
+    def isolatedData = new File(isolatedHome, '.local/share')
+    environment 'LOCALAPPDATA', isolatedLocal.absolutePath
+    environment 'APPDATA', isolatedRoaming.absolutePath
+    environment 'XDG_DATA_HOME', isolatedData.absolutePath
+    environment 'USERPROFILE', isolatedHome.absolutePath
+    environment 'HOME', isolatedHome.absolutePath
+    environment 'TEMP', isolatedTemp.absolutePath
+    environment 'TMP', isolatedTemp.absolutePath
+    systemProperty 'user.home', isolatedHome.absolutePath
+    systemProperty 'java.io.tmpdir', isolatedTemp.absolutePath
+    doFirst {
+        [isolatedHome, isolatedTemp, isolatedLocal, isolatedRoaming, isolatedData].each { it.mkdirs() }
+    }
+}

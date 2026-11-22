@@ -1,0 +1,530 @@
+[
+  {
+    "file": "Forwards-2.2.6.jar",
+    "id": "com_github_agentdid127_resourcepackconverter_forwards",
+    "version": "2.2.6",
+    "sha256": "ce3811690f91b3c28927c231622d0564fc008229a4022566cb2aac31b4e75902",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "Library-2.2.6.jar",
+    "id": "com_github_agentdid127_resourcepackconverter_library",
+    "version": "2.2.6",
+    "sha256": "e33d5a4dd8049fa7c2f489fa552d22ee710123ec08a97d0591dfe5f48cd93710",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "commons-logging-1.3.5.jar",
+    "id": "commons-logging_commons-logging",
+    "version": "1.3.5",
+    "sha256": "f1acaeb86f2708251f8f4342cb7f4f1a78022d80afb901a20eff5bad4d5b4011",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "httpclient-4.5.14.jar",
+    "id": "org_apache_httpcomponents_httpclient",
+    "version": "4.5.14",
+    "sha256": "ed65479c85bf6f59f9f039fba7b339eb53cece3d2236cb408705e21f59ba1a70",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "httpcore-4.4.16.jar",
+    "id": "org_apache_httpcomponents_httpcore",
+    "version": "4.4.16",
+    "sha256": "94561c53f3b56ae846ba2f1deb91b9d46abebf4897b0f21e4522dc6a0c26f693",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "hypixel-mod-api-1.0.2+build.1+mc26.1.jar",
+    "id": "hypixel-mod-api",
+    "version": "1.0.2+build.1+mc26.1",
+    "sha256": "0cea593ef5ef7d8b5d0b6e9c215823a8bd14784419325fe226f0af44376aacdf",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "mod-api-1.0.2.jar",
+    "id": "net_hypixel_mod-api",
+    "version": "1.0.2",
+    "sha256": "144392e1bda921d3e6f8b0f15f48c95e630ce1bfea7d5ee51ae6a9e75f00bc3c",
+    "include": false,
+    "parent": "hypixel-mod-api-1.0.2+build.1+mc26.1.jar"
+  },
+  {
+    "file": "imgui-java-binding-1.90.0.jar",
+    "id": "io_github_spair_imgui-java-binding",
+    "version": "1.90.0",
+    "sha256": "cb0b539a3621f101280f0d68415921f1f2757688e6d2478f6341bb69416b08f1",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "imgui-java-lwjgl3-1.90.0.jar",
+    "id": "io_github_spair_imgui-java-lwjgl3",
+    "version": "1.90.0",
+    "sha256": "2de2e4416f2597ce9c5d831bc5df09ca084531299563962ff95408cb976decab",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "imgui-java-natives-linux-1.90.0.jar",
+    "id": "io_github_spair_imgui-java-natives-linux",
+    "version": "1.90.0",
+    "sha256": "bbb87cc609f45a135bf0aeff945d79302bb6f4a89fc981c5c75f9b0aae441b9e",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "imgui-java-natives-macos-1.90.0.jar",
+    "id": "io_github_spair_imgui-java-natives-macos",
+    "version": "1.90.0",
+    "sha256": "4dd80adc4d6788dc5bde3f1cdaa81abfc2d75e70574c6a3721330f0ab1fcda2a",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "imgui-java-natives-windows-1.90.0.jar",
+    "id": "io_github_spair_imgui-java-natives-windows",
+    "version": "1.90.0",
+    "sha256": "5cd912c36d51b5b373bcb00ae04fc63bb39843f1973f19ae9fe32ce926d535f2",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "jlayer-nextgen-1.0.jar",
+    "id": "local_jlayer-nextgen",
+    "version": "1.0",
+    "sha256": "01afb80210c905467b64a7f53bdb04ee9fec2c7e892af66d9c55f93e3db6864c",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "json-20250517.jar",
+    "id": "org_json_json",
+    "version": "20250517",
+    "sha256": "fa57ffcb3ce9bd1612da3a47e1d6e955137628d9a4af525d283c0035e94c48e6",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "jsvg-2.1.0.jar",
+    "id": "com_github_weisj_jsvg",
+    "version": "2.1.0",
+    "sha256": "c9bf2db7051822d60746376a65f81b8a1c8a4f41687f40a9d9579800567da096",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "mcef-fabric-2.2.1-26.2.jar",
+    "id": "mcef",
+    "version": "2.2.1",
+    "sha256": "dcf41d21de87f1a397c17a460a584fba7aa05e3c245120a1473e550128eb0cb7",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "mixinextras-fabric-0.4.1.jar",
+    "id": "mixinextras",
+    "version": "0.4.1",
+    "sha256": "bb7042dd915cad67dc7c2ad0a4c0eabe6e097123785d7877beded6e0700f92ef",
+    "include": false,
+    "parent": "mcef-fabric-2.2.1-26.2.jar"
+  },
+  {
+    "file": "viafabricplus-4.6.0.jar",
+    "id": "viafabricplus",
+    "version": "4.6.0",
+    "sha256": "df7339f422b6798c9b500d0b2afe9338292bb4ade124926c2261de361cfb3cce",
+    "include": true,
+    "parent": null
+  },
+  {
+    "file": "CubeConverter-abecffaaea.jar",
+    "id": "com_github_oryxel1_cubeconverter",
+    "version": "abecffaaea",
+    "sha256": "5ae3d0080ba33cbd79ec555ea8c7aca63b62bf7e82c34e3b20fddd7d79163d1b",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "MinecraftAuth-5.0.1.jar",
+    "id": "net_raphimc_minecraftauth",
+    "version": "5.0.1",
+    "sha256": "5d6b99c6ffcf3286a56249562af1cb1d31af6490258b3240b20a07bc924e2010",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "Reflect-1.6.3.jar",
+    "id": "net_lenni0451_reflect",
+    "version": "1.6.3",
+    "sha256": "04bd57a74689dc2ff104007a85e406ad046a6bb2ad0d1ca90817b27428410527",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "ViaBedrock-0.0.29-20260619.225131-1.jar",
+    "id": "net_raphimc_viabedrock",
+    "version": "0.0.29-20260619.225131-1",
+    "sha256": "18e4d598d0c32f6a3caec2a6f37eeb43ba3e4c57a811586a03c3ff2ee2402a6e",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "ViaLegacy-3.0.16.jar",
+    "id": "net_raphimc_vialegacy",
+    "version": "3.0.16",
+    "sha256": "bd09400578f41c92749d319f8f820138841b1cac7d8d647dc33f4d7d470d5761",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "classic4j-2.3.0.jar",
+    "id": "de_florianreuth_classic4j",
+    "version": "2.3.0",
+    "sha256": "ce2513799a9d627dc6958f7dd74715c2c0c06bfc63d7a0dcae7865a59a1241fc",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "dialog-5-3.2.2-20251210.004302-1.jar",
+    "id": "com_viaversion_mcstructs_dialog",
+    "version": "5-3.2.2-20251210.004302-1",
+    "sha256": "117d2fdaffbc5cdd7d399a5b7dae22911b569464cf1ca1e1fb8cda7820b35d8c",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "error_prone_annotations-2.41.0.jar",
+    "id": "com_google_errorprone_error_prone_annotations",
+    "version": "2.41.0",
+    "sha256": "ed019942e3580b10dc7bdeb1fe543f13e6e4a7f2d83782ebae5c01adbe9abd1b",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "expiringmap-0.5.10.jar",
+    "id": "net_jodah_expiringmap",
+    "version": "0.5.10",
+    "sha256": "8237d117ed8483f19154464a4728b4c794cf1436fdf63168074d6b7bffbcf09b",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-api-base-2.0.4+ece063239e.jar",
+    "id": "fabric-api-base",
+    "version": "2.0.4+ece063239e",
+    "sha256": "91679a213120ca9fe8681461f4e9ff65f296a80a844d50c7dfc2113787b8b41a",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-command-api-v2-3.1.0+00cb03469e.jar",
+    "id": "fabric-command-api-v2",
+    "version": "3.1.0+00cb03469e",
+    "sha256": "067dc4f579ba2810826bd13538f8968cf3643795a6948cfac231ebd5209851e1",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-lifecycle-events-v1-4.1.3+4575b05f9e.jar",
+    "id": "fabric-lifecycle-events-v1",
+    "version": "4.1.3+4575b05f9e",
+    "sha256": "25400689f1a3ca5c8b1044780cd5153b5af2c7dc47f94d8b72db52d0e3c38dcc",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-networking-api-v1-6.3.3+72073ef09e.jar",
+    "id": "fabric-networking-api-v1",
+    "version": "6.3.3+72073ef09e",
+    "sha256": "9bebe754e67bcca0642571173a0ba57edc83ec59fa819100dec9cf17943e6ffa",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-particles-v1-5.0.18+d1756aa99e.jar",
+    "id": "fabric-particles-v1",
+    "version": "5.0.18+d1756aa99e",
+    "sha256": "61d532316d7918e473c906b11d22f3686c92806d5616c1f64cf99bc8002bd306",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-registry-sync-v0-7.1.0+c7bd5b8e9e.jar",
+    "id": "fabric-registry-sync-v0",
+    "version": "7.1.0+c7bd5b8e9e",
+    "sha256": "1ac63e5518b87c024f20742cc228852eb9ad7b96b979b43624c8107d1b094601",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-resource-loader-v0-3.3.20+4fc5413f9e.jar",
+    "id": "fabric-resource-loader-v0",
+    "version": "3.3.20+4fc5413f9e",
+    "sha256": "9c62b5b85e903a07542ed4825890afb70fe533795e791dc6515a9484f8221654",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "fabric-resource-loader-v1-2.0.13+9edec1269e.jar",
+    "id": "fabric-resource-loader-v1",
+    "version": "2.0.13+9edec1269e",
+    "sha256": "e9e71603cfe29960eff8cc7b5be799e17463bb8267c16dafd232be2238281e7a",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "forms-2.0.1.jar",
+    "id": "net_lenni0451_mcstructs-bedrock_forms",
+    "version": "2.0.1",
+    "sha256": "671f80f55d0e058ddd77571fd38ae9f5f91a28cb8ae5fc24d4c934b5895dcf43",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "gson-1.9.2.jar",
+    "id": "net_lenni0451_commons_gson",
+    "version": "1.9.2",
+    "sha256": "e32f3072d35c107d891ff9bb8afb1aa06349c4bee2a2da478c9acb56f069c949",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "gson-2.13.2.jar",
+    "id": "com_google_code_gson_gson",
+    "version": "2.13.2",
+    "sha256": "87d7ee84f5e18a76e61c50cce53ff82c156b5b5e3c835e857c7dbcc3628d85fb",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "httpclient-1.9.2.jar",
+    "id": "net_lenni0451_commons_httpclient",
+    "version": "1.9.2",
+    "sha256": "99ec84fd8c544722e8f0bfe653f8e50a0e577791622a716e0b211e0dde21a6b4",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "jjwt-api-0.13.0.jar",
+    "id": "io_jsonwebtoken_jjwt-api",
+    "version": "0.13.0",
+    "sha256": "34ae76804f9f8f23b36e9668f131ecb4198cb659de61f6dad51f7c1bda122f6b",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "jjwt-gson-0.13.0.jar",
+    "id": "io_jsonwebtoken_jjwt-gson",
+    "version": "0.13.0",
+    "sha256": "0a5c7db63d991fbcf93e055a463a4d8ef1125bbc84f2fd70d598b4b10e2d273a",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "jjwt-impl-0.13.0.jar",
+    "id": "io_jsonwebtoken_jjwt-impl",
+    "version": "0.13.0",
+    "sha256": "c85e53c2828dd4f971cd8b68c7076fce30c4c39a99d049bba4fa661af3a2628d",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "mc_biome-1.171.1.jar",
+    "id": "com_seedfinding_mc_biome",
+    "version": "1.171.1",
+    "sha256": "f60b482183d1103e128db8595c025317f8e6ab853eb8dd27898130951cacc091",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "mc_core-1.210.0.jar",
+    "id": "com_seedfinding_mc_core",
+    "version": "1.210.0",
+    "sha256": "4dff9e6626dfd091c72ff8eac9dcf180923b8cdb7d9bb6b6ee49c786fb6ef1af",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "mc_math-1.171.0.jar",
+    "id": "com_seedfinding_mc_math",
+    "version": "1.171.0",
+    "sha256": "4b78f196b1c8f95dd9b32bfcba66c73a1c2d94c12453fb52441fa70f210c071a",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "mc_noise-1.171.1.jar",
+    "id": "com_seedfinding_mc_noise",
+    "version": "1.171.1",
+    "sha256": "a9f583c32dafcbc372afec3ce4ce5438a232e0f5dec137ed917b209e98505163",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "mc_seed-1.171.2.jar",
+    "id": "com_seedfinding_mc_seed",
+    "version": "1.171.2",
+    "sha256": "97ad35ad5ef8d71c73436ffdfed274f176539b1b01c768bace1607c678f0afac",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "mocha-3.0.1.jar",
+    "id": "team_unnamed_mocha",
+    "version": "3.0.1",
+    "sha256": "cd91e4608f01e4a7a1e01fdec7df1a19957ef6c9297bcfbf25f604c953ff5a30",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "netty-transport-nethernet-1.7.0.jar",
+    "id": "dev_kastle_netty_netty-transport-nethernet",
+    "version": "1.7.0",
+    "sha256": "bc3869d4b2d84947919077783a0fee0a395f612090027f29c1a8a94125cf9fc2",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "netty-transport-raknet-1.7.0.jar",
+    "id": "dev_kastle_netty_netty-transport-raknet",
+    "version": "1.7.0",
+    "sha256": "8d243c15bbc522799e12db92bef1d262157d9ad98dd784f38b683450296d0ebb",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "registry-5-3.2.2-SNAPSHOT.jar",
+    "id": "com_viaversion_mcstructs_registry",
+    "version": "5-3.2.2-SNAPSHOT",
+    "sha256": "81a17858ca284d82b90cf83b0b8ad5d33ef8e6378bb9a531014558af4e26d25e",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "semver4j-3.1.0.jar",
+    "id": "com_vdurmont_semver4j",
+    "version": "3.1.0",
+    "sha256": "d82b28a01d4a4f5acd37de7bdd9bd8d8cc14497399ac01abd979423861844abb",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "text-2.0.1.jar",
+    "id": "net_lenni0451_mcstructs-bedrock_text",
+    "version": "2.0.1",
+    "sha256": "147a12e97a62873052ad7877c07d11e20bb6147b58c3aa8875dced3601a03fec",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "unchecked-1.9.2.jar",
+    "id": "net_lenni0451_commons_unchecked",
+    "version": "1.9.2",
+    "sha256": "8ab7e81f924870dcacf28ae15e9a28f7cff9b15def3c939219309803bbb69fcc",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "viaaprilfools-common-4.2.1.jar",
+    "id": "com_viaversion_viaaprilfools-common",
+    "version": "4.2.1",
+    "sha256": "008e977facce79c4f3bb218d11afa9d979b878cdf68999a8796d2445031ec0eb",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "viabackwards-common-5.10.0.jar",
+    "id": "com_viaversion_viabackwards-common",
+    "version": "5.10.0",
+    "sha256": "7dae00930f2a8a4a6239f8ce1774f47c1ba0a40819563372d2b6c4cd30651fef",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "viafabricplus-api-4.6.0.jar",
+    "id": "viafabricplus-api",
+    "version": "4.6.0",
+    "sha256": "c000ddd557dfd7beb1a6fdae282ef8b51bdb9191baaa14e68a71d340f7b38a3f",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "viafabricplus-visuals-4.6.0.jar",
+    "id": "viafabricplus-visuals",
+    "version": "4.6.0",
+    "sha256": "1e2a88a285a16273103e963fd1e4db0c6f0062c71a8ec4bc180794948d4847cc",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "viaversion-common-5.10.0.jar",
+    "id": "com_viaversion_viaversion-common",
+    "version": "5.10.0",
+    "sha256": "a6a9e4b4110b36258b0567205f59b038b0477117ee65c49741ab956bc31ca707",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "webrtc-java-1.0.3-linux-aarch64.jar",
+    "id": "dev_kastle_webrtc_webrtc-java_linux-aarch64",
+    "version": "1.0.3",
+    "sha256": "aa90a2b4cf47a47dad7aa5be84a5c24a294609ab87ec2c11227da2e65442d974",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "webrtc-java-1.0.3-linux-x86_64.jar",
+    "id": "dev_kastle_webrtc_webrtc-java_linux-x86_64",
+    "version": "1.0.3",
+    "sha256": "1ec782a396a8c3c4ef145776c611d4eabd6dfb81ef21c6e93aacd3d039615745",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "webrtc-java-1.0.3-macos-aarch64.jar",
+    "id": "dev_kastle_webrtc_webrtc-java_macos-aarch64",
+    "version": "1.0.3",
+    "sha256": "55c718c001c4d72c23f37408b3f7ed67d28da047cbce75787d67928ece640ead",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "webrtc-java-1.0.3-windows-aarch64.jar",
+    "id": "dev_kastle_webrtc_webrtc-java_windows-aarch64",
+    "version": "1.0.3",
+    "sha256": "7acde9d3e80416bd0267e59f9fa6d98fc6abb8b62eb47692ea98a7c5345f7a61",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "webrtc-java-1.0.3-windows-x86_64.jar",
+    "id": "dev_kastle_webrtc_webrtc-java_windows-x86_64",
+    "version": "1.0.3",
+    "sha256": "fc6b30487f160f10be486c8f6849936dbd3a40fb308bb10dfd526726e94dd890",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "webrtc-java-1.0.3.jar",
+    "id": "dev_kastle_webrtc_webrtc-java",
+    "version": "1.0.3",
+    "sha256": "ecaee5ae28a88d133a223c9859b1247e7d0daeacaf5faa8f184a981e63f8da2e",
+    "include": false,
+    "parent": "viafabricplus-4.6.0.jar"
+  },
+  {
+    "file": "zip4j-2.11.3.jar",
+    "id": "net_lingala_zip4j_zip4j",
+    "version": "2.11.3",
+    "sha256": "5268566c20753312852301432e8c81b70d9876ea35f17768552b57cc7e52c88a",
+    "include": true,
+    "parent": null
+  }
+]

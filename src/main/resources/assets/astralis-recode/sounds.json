@@ -1,0 +1,14 @@
+{
+  "hit": {
+    "sounds": ["astralis-recode:hit"]
+  },
+  "hit2": {
+    "sounds": ["astralis-recode:hit2"]
+  },
+  "neverlose": {
+    "sounds": ["astralis-recode:neverlose"]
+  },
+  "skeet": {
+    "sounds": ["astralis-recode:skeet"]
+  }
+}
