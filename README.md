@@ -16,6 +16,14 @@ The result is 988 classes and about 133,000 lines of Java. It covers 112 modules
 
 OpenAstralis was done fully by **Claude Opus 5.5** at **xhigh** effort: the recovery, the deobfuscation, the naming, the verification and the documentation.
 
+## About this version
+
+This isn't the latest Astralis, sadly. I got this version's source the day after it was released. Michael Stetson (Cioc), Khadow and Kawase threatened me not to leak it.
+
+![Discord message from Cioc, display name "michaelstetson school"](img/cioc-message.png)
+
+![Discord message from Khadow on 6 October 2026, telling me not to give anyone the source](img/khadow-message.png)
+
 ## Protections, and how each was defeated
 
 Astralis stacks several layers of protection. The table gives the short version, and the sections below give the details.
