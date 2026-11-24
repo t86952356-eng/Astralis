@@ -1,5 +1,53 @@
 # Changelog
 
+## 2.2.4 — blur & UI shader removal (Android performance)
+
+### Removed
+
+- **All backdrop blur is gone from every UI surface.** The per-frame
+  fullscreen blur snapshot and the rounded-region blurs behind ClickGUI
+  panels, HUD modules (Watermark, ArrayList, TabGui, Target HUD,
+  Session Stats, scoreboard, chat tabs, notifications, tooltips, custom
+  buttons and sliders, alt manager and every other screen) were disabled
+  at the renderer level: every draw/update method of
+  `BlurShadowManager` and `BackdropBlurRenderer` is now a no-op.
+- **Kawase shadow renderer disabled** (`ShadowRenderer`): the blurred
+  soft shadows behind ClickGUI panels and HUD cards no longer run their
+  multi-pass blur. UI elements keep their own solid translucent
+  backgrounds, rounded corners and text.
+- **Liquid-glass shader disabled** (`LiquidGlassRenderer`): the
+  refraction/glass effect used by ClickGUI and the screens is now a
+  no-op.
+- **Sandbox main-menu background shader disabled.** The custom main
+  menu drew a fullscreen 6-octave FBM noise shader every frame; the
+  vanilla panorama is restored as the title-screen background instead
+  (`GuiRendererMixin`'s panorama redirect is now a plain pass-through).
+- **Vanilla blurred screen background disabled** (`ScreenMixin` now
+  always cancels `extractBlurredBackground`), so pause and inventory
+  screens no longer run the game's own background-blur pass.
+
+### Unchanged
+
+- Normal UI rendering (`RoundedRectRenderer`, `MsdfTextRenderer`,
+  `TexturedQuadRenderer`) is untouched: menus and HUD keep their
+  layout, colors, rounded rectangles and text - only the blur behind
+  them is gone.
+- World-only, module-gated effects (Ambience sky shader, ESP / glow,
+  X-ray) are untouched.
+- All 14 embedded (jar-in-jar) libraries, the bundled arm64 LWJGL
+  natives with the `preLaunch` auto-installer, and the trimmed
+  ViaFabricPlus from 2.2.3.
+
+### Why
+
+Blur passes copy the whole framebuffer and run multi-pass Gaussian /
+Kawase filters every single frame. On Android GPUs (MobileGlues,
+PojavLauncher) this is the main source of UI lag. Removing the blur
+passes removes the lag: solid translucent backgrounds render in one
+pass. The removal is done as bytecode surgery on the released jar and
+verified automatically (structure checks, mixin metadata, class
+reference audit, and per-method verification that every patched body is
+a single `return`).
 ## 2.2.3 — embedded libraries fix
 
 ### Fixed
