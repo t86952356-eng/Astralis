@@ -2,11 +2,11 @@
 
 OpenAstralis is the Astralis client (version 2.2, Fabric, Minecraft 26.2), reversed from a live process back into readable, buildable Java source.
 
-> **This fork (2.2.2) is the Android-optimized build.** Windows-only, desktop-only and
+> **This fork (2.2.3) is the Android-optimized build.** Windows-only, desktop-only and
 > crash-prone parts were removed or safely disabled, and the LWJGL arm64 natives the
 > game needs are bundled and installed automatically, so the client boots on Android
 > launchers (FCL, PojavLauncher, Zalith) even on legacy boat runtimes, while every
-> module, menu and rendering effect stays the same. See [CHANGELOG.md](CHANGELOG.md)
+> module, menu and rendering effect stays the same. All 14 embedded libraries are registered again (2.2.2 accidentally dropped them, crashing startup with `NoClassDefFoundError: net.hypixel.modapi.packet.HypixelPacket`). See [CHANGELOG.md](CHANGELOG.md)
 > for the full list.
 
 **Backup / Mirror: https://deobf.su/yxzero/openastralis**

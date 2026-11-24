@@ -1,5 +1,41 @@
 # Changelog
 
+## 2.2.3 — embedded libraries fix
+
+### Fixed
+
+- **Startup crash while initializing the game**
+  (`java.lang.NoClassDefFoundError: net.hypixel.modapi/packet/HypixelPacket`
+  at `astralis.Astralis.initialize`). The 2.2.2 jar was repacked with a
+  fabric.mod.json that had lost its `jars` section, so none of the 14
+  embedded (jar-in-jar) libraries were registered with Fabric Loader:
+  the Hypixel Mod API, ViaFabricPlus, the ImGui binding, the
+  resource-pack converter, the HTTP stack and more were simply absent
+  from the classpath. Minecraft booted up to the client-construction
+  phase, and the client crashed the moment it first touched an embedded
+  class. 2.2.3 restores the complete embedded library list exactly as
+  the original 2.2.1 layout (14 jars, including the nested `mod-api`
+  core inside the Hypixel wrapper).
+- **Automated class-reference audit** added to the build: every one of
+  the 975 client classes resolves all of its references from the mod
+  jar, its embedded libraries (10,906 classes, resolved recursively
+  through nested jars) or the game / loader classpath.
+
+### Unchanged from 2.2.2
+
+- Bundled arm64 LWJGL natives with the `preLaunch` auto-installer for
+  legacy boat runtimes; launchers that ship their own natives
+  (FCL 1.3.5+ with MobileGlues, PojavLauncher, Zalith, desktop) are
+  detected and left completely untouched.
+- ViaFabricPlus stays slimmed by 9.8 MB of desktop WebRTC natives;
+  the linux-aarch64 build is kept so Bedrock voice chat works.
+
+### Requirements
+
+- Minecraft 26.2, Fabric Loader >= 0.19.3, Fabric API, Java 25.
+- Java 21 cannot load this build: the mod requires `java >= 25` and
+  Fabric Loader enforces it before the game starts.
+
 ## 2.2.2 — Android LWJGL natives fix
 
 ### Fixed
