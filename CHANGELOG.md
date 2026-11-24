@@ -1,5 +1,50 @@
 # Changelog
 
+## 2.2.2 — Android LWJGL natives fix
+
+### Fixed
+
+- **Startup crash before the loading logo**
+  (`UnsatisfiedLinkError: Failed to locate library: liblwjgl.so`).
+  Minecraft 26.2 loads its LWJGL native libraries before anything is
+  rendered. Android launchers that still use the legacy boat runtime
+  (FCL 1.2.9.x, "the last version with boat") replace the LWJGL classes
+  but never place the native libraries where LWJGL can find them, so the
+  game died instantly. The client now ships the arm64 LWJGL natives
+  (core, OpenGL, STB and TinyFD - the exact android builds the launcher
+  itself uses) inside the mod jar and installs them automatically before
+  the game starts through a `preLaunch` entrypoint. Desktop launchers and
+  newer runtimes that provide their own natives are detected and left
+  completely untouched.
+
+### Improved on Android
+
+- **Vulkan is skipped on legacy boat runtimes.** Minecraft 26.2 loads
+  shaderc/spvc/vma natives when the Vulkan loader is available, and the
+  legacy boat runtime has none of them - the game would have crashed
+  right after the GL path started working. Vulkan is now disabled only on
+  devices where our natives are installed, so Minecraft renders through
+  the OpenGL (OSMesa/Zink) pipeline, exactly what the launcher intends.
+
+### Removed (dead weight on Android)
+
+- **9.8 MB of desktop WebRTC natives** bundled inside ViaFabricPlus
+  (windows-x86_64, windows-arm64, macos-arm64, linux-x86_64). Only the
+  linux-aarch64 build is kept, so Bedrock voice chat still works on
+  Android. Desktop users who need it can add ViaFabricPlus's own jar.
+
+### Size
+
+- Mod jar: **55.4 MB -> 45.9 MB** (9.5 MB smaller than 2.2.1 and 27%
+  smaller than the original 62.8 MB 2.2 build) while also gaining the
+  bundled arm64 natives (+1.3 MB).
+
+### Requirements
+
+- Minecraft 26.2, Fabric Loader >= 0.19.3, Fabric API, Java 25.
+- FCL 1.2.9.x (boat) is fully supported now; launchers that provide
+  their own LWJGL natives are detected automatically and preferred.
+
 ## 2.2.1 — Android optimization release
 
 This build removes or safely disables parts that only work on Windows (desktop)

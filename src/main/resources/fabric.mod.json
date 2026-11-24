@@ -3,12 +3,14 @@
   "id": "astralis-recode",
   "version": "${version}",
   "name": "Astralis-Recode",
-  "description": "Astralis 2.2.1 for Minecraft 26.2 - Android optimized build.",
+  "description": "Astralis 2.2.2 for Minecraft 26.2 - Android optimized build with bundled LWJGL arm64 natives.",
   "authors": ["Kawase", "Ihasedich", "Badaiim", "Cioc"],
   "license": "CC0-1.0",
   "icon": "assets/astralis-recode/icon.png",
   "environment": "client",
-  "entrypoints": {},
+  "entrypoints": {
+    "preLaunch": ["pub.astralis.client.android.AndroidNativesCompat"]
+  },
   "mixins": ["astralis-recode.mixins.json"],
   "accessWidener": "astralis-recode.classtweaker",
   "depends": {
