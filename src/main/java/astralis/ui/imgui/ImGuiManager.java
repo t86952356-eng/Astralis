@@ -1,5 +1,6 @@
 package astralis.ui.imgui;
 
+import astralis.Astralis;
 import astralis.util.render.Render2DContext;
 import astralis.util.render.RenderUtil;
 
@@ -27,13 +28,30 @@ public class ImGuiManager {
     private static String selectedThemeName;
     private static String appliedThemeName;
 
+    /**
+     * Dear ImGui ships native backends for desktop platforms only. When they are
+     * missing (for example on Android), every ImGui entry point silently becomes
+     * a no-op and the client falls back to its built-in Dropdown/Panel menus.
+     */
+    private static volatile boolean available;
+
+    public static boolean isAvailable() {
+        return available;
+    }
+
     public static String getDefaultThemeName() {
         return "Adobe Inspired";
     }
 
     public static void init(long windowHandle) {
 
-        if (Render2DContext.isOpenGlBackend()) {
+        if (available || !Render2DContext.isOpenGlBackend()) {
+            return;
+        }
+
+        try {
+            ImGuiImplGlfw glfwBackend = new ImGuiImplGlfw();
+            ImGuiImplGl3 gl3Backend = new ImGuiImplGl3();
             ImGui.createContext();
             ImPlot.createContext();
             applyTheme("Adobe Inspired");
@@ -55,17 +73,29 @@ public class ImGuiManager {
                         imGuiIo.getFonts().addFontFromMemoryTTF(fontData, 16.5F);
                     } else {
 
-                        System.err.println("Product Sans font not found.");
+                        Astralis.LOGGER.warn("Product Sans font not found.");
                     }
                 }
             } catch (IOException exception) {
 
-                System.err.println("Failed to load main font");
+                Astralis.LOGGER.warn("Failed to load main font", exception);
             }
 
             imGuiIo.getFonts().build();
+            imGuiGlfw = glfwBackend;
+            imGuiGl3 = gl3Backend;
             imGuiGlfw.init(windowHandle, false);
             imGuiGl3.init();
+            available = true;
+        } catch (Throwable nativeFailure) {
+
+            // Missing imgui natives (Android) must never crash startup.
+            available = false;
+            imGuiGlfw = null;
+            imGuiGl3 = null;
+            Astralis.LOGGER.warn(
+                    "Dear ImGui is unavailable on this platform ({}); the built-in menus will be used instead.",
+                    nativeFailure.toString());
         }
     }
 
@@ -160,7 +190,7 @@ public class ImGuiManager {
 
     public static void beginFrame() {
 
-        if (Render2DContext.isOpenGlBackend()) {
+        if (available && Render2DContext.isOpenGlBackend()) {
             if (!"Adobe Inspired".equals(appliedThemeName)) {
                 applyTheme("Adobe Inspired");
                 appliedThemeName = "Adobe Inspired";
@@ -178,7 +208,7 @@ public class ImGuiManager {
 
     public static void endFrame() {
 
-        if (Render2DContext.isOpenGlBackend()) {
+        if (available && Render2DContext.isOpenGlBackend()) {
             ImGui.render();
             imGuiGl3.renderDrawData(ImGui.getDrawData());
 
@@ -196,15 +226,19 @@ public class ImGuiManager {
 
     public static void charCallback(long window, int codepoint) {
 
-        if (Render2DContext.isOpenGlBackend()) {
-            imGuiGlfw.charCallback(window, codepoint);
+        if (available && Render2DContext.isOpenGlBackend()) {
+            if (imGuiGlfw != null) {
+                imGuiGlfw.charCallback(window, codepoint);
+            }
         }
     }
 
     public static void keyCallback(long window, int key, int scancode, int action, int mods) {
 
-        if (Render2DContext.isOpenGlBackend()) {
-            imGuiGlfw.keyCallback(window, key, scancode, action, mods);
+        if (available && Render2DContext.isOpenGlBackend()) {
+            if (imGuiGlfw != null) {
+                imGuiGlfw.keyCallback(window, key, scancode, action, mods);
+            }
         }
     }
 
@@ -214,21 +248,23 @@ public class ImGuiManager {
 
     public static void mouseButtonCallback(long window, int button, int action, int mods) {
 
-        if (Render2DContext.isOpenGlBackend()) {
-            imGuiGlfw.mouseButtonCallback(window, button, action, mods);
+        if (available && Render2DContext.isOpenGlBackend()) {
+            if (imGuiGlfw != null) {
+                imGuiGlfw.mouseButtonCallback(window, button, action, mods);
+            }
         }
     }
 
     public static void scrollCallback(long window, double xOffset, double yOffset) {
 
-        if (Render2DContext.isOpenGlBackend()) {
-            imGuiGlfw.scrollCallback(window, xOffset, yOffset);
+        if (available && Render2DContext.isOpenGlBackend()) {
+            if (imGuiGlfw != null) {
+                imGuiGlfw.scrollCallback(window, xOffset, yOffset);
+            }
         }
     }
 
     static {
-        imGuiGlfw = new ImGuiImplGlfw();
-        imGuiGl3 = new ImGuiImplGl3();
         selectedThemeName = "Darky";
         appliedThemeName = null;
     }

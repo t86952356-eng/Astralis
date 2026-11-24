@@ -76,7 +76,7 @@
     "id": "io_github_spair_imgui-java-natives-linux",
     "version": "1.90.0",
     "sha256": "bbb87cc609f45a135bf0aeff945d79302bb6f4a89fc981c5c75f9b0aae441b9e",
-    "include": true,
+    "include": false,
     "parent": null
   },
   {
@@ -84,7 +84,7 @@
     "id": "io_github_spair_imgui-java-natives-macos",
     "version": "1.90.0",
     "sha256": "4dd80adc4d6788dc5bde3f1cdaa81abfc2d75e70574c6a3721330f0ab1fcda2a",
-    "include": true,
+    "include": false,
     "parent": null
   },
   {
@@ -92,7 +92,7 @@
     "id": "io_github_spair_imgui-java-natives-windows",
     "version": "1.90.0",
     "sha256": "5cd912c36d51b5b373bcb00ae04fc63bb39843f1973f19ae9fe32ce926d535f2",
-    "include": true,
+    "include": false,
     "parent": null
   },
   {
@@ -124,7 +124,7 @@
     "id": "mcef",
     "version": "2.2.1",
     "sha256": "dcf41d21de87f1a397c17a460a584fba7aa05e3c245120a1473e550128eb0cb7",
-    "include": true,
+    "include": false,
     "parent": null
   },
   {
@@ -132,8 +132,8 @@
     "id": "mixinextras",
     "version": "0.4.1",
     "sha256": "bb7042dd915cad67dc7c2ad0a4c0eabe6e097123785d7877beded6e0700f92ef",
-    "include": false,
-    "parent": "mcef-fabric-2.2.1-26.2.jar"
+    "include": true,
+    "parent": null
   },
   {
     "file": "viafabricplus-4.6.0.jar",

@@ -11,9 +11,13 @@ public abstract class GlfwPlatformSelector {
 
     public static void initGlfwWithPlatform() {
 
-        GLFW.glfwInitHint(327683, 393217);
+        // Select the GLFW platform for this system instead of always requesting
+        // WIN32. Forcing WIN32 breaks every non-Windows runtime (including
+        // Android launchers), where GLFW fails to initialize under that hint.
+        int platform = detectPlatform();
+        GLFW.glfwInitHint(327683, platform);
 
-        Astralis.LOGGER.info("Selecting Platform: {}", getPlatformName(393217));
+        Astralis.LOGGER.info("Selecting Platform: {}", getPlatformName(platform));
 
         Astralis.LOGGER.info("GLFW: {}", GLFW.glfwGetVersionString());
         GLFW.glfwInit();

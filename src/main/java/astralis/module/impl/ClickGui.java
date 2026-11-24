@@ -121,7 +121,9 @@ public class ClickGui extends Module {
                 .map(mode -> mode.getName())
                 .filter(
                         name -> {
-                            return !name.equals("Imgui") || Render2DContext.isOpenGlBackend();
+                            return !name.equals("Imgui")
+                                    || (Render2DContext.isOpenGlBackend()
+                                            && ImGuiManager.isAvailable());
                         })
                 .toList();
     }
@@ -129,7 +131,8 @@ public class ClickGui extends Module {
     public String getActiveStyle() {
 
         String activeStyle;
-        if (this.style.is("Imgui") && !Render2DContext.isOpenGlBackend()) {
+        if (this.style.is("Imgui")
+                && (!Render2DContext.isOpenGlBackend() || !ImGuiManager.isAvailable())) {
 
             activeStyle = "Dropdown";
         } else {
@@ -142,7 +145,8 @@ public class ClickGui extends Module {
     @Override
     public void onEnable() {
 
-        if (this.style.is("Imgui") && !Render2DContext.isOpenGlBackend()) {
+        if (this.style.is("Imgui")
+                && (!Render2DContext.isOpenGlBackend() || !ImGuiManager.isAvailable())) {
 
             this.style.setMode("Dropdown");
         }

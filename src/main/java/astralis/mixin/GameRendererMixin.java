@@ -113,7 +113,7 @@ public class GameRendererMixin {
             DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo ci) {
         if (this.minecraft.gui.screen() instanceof ImGuiScreen screen) {
             ImGuiManager.beginFrame();
-            if (Render2DContext.isOpenGlBackend()) {
+            if (Render2DContext.isOpenGlBackend() && ImGuiManager.isAvailable()) {
                 screen.renderImGui(ImGui.getIO());
             }
 

@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.network.chat.Component;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,7 +41,9 @@ public abstract class JoinMultiplayerScreenMixin extends Screen {
             this.addRenderableWidget(this.altManagerButton);
         }
 
-        if (this.miniBloxButton == null) {
+        // MiniBlox boots a local Node.js translation layer that only installs
+        // on Windows; hide its entry point everywhere else (notably Android).
+        if (this.miniBloxButton == null && SystemUtils.IS_OS_WINDOWS) {
             this.miniBloxButton =
                     Button.builder(
                                     Component.literal("MiniBlox"),
@@ -53,6 +56,8 @@ public abstract class JoinMultiplayerScreenMixin extends Screen {
         }
 
         this.altManagerButton.setPosition(this.width - 105, this.height - 35);
-        this.miniBloxButton.setPosition(5, 5);
+        if (this.miniBloxButton != null) {
+            this.miniBloxButton.setPosition(5, 5);
+        }
     }
 }

@@ -33,47 +33,54 @@ public class WindowMixin {
     @Inject(method = "setIcon", at = @At("HEAD"), cancellable = true)
     private void setAstralisWindowIcon(
             PackResources packResources, IconSet iconSet, CallbackInfo callbackInfo) {
-        int platform = GLFW.glfwGetPlatform();
-        if (platform == GLFW.GLFW_PLATFORM_COCOA) {
-            // Cocoa windows have no GLFW icon; like vanilla, set the application (Dock) icon.
-            try {
-                if (WindowMixin.class.getResource("/assets/astralis-recode/icon.png") != null) {
-                    MacosUtil.loadIcon(
-                            () ->
-                                    WindowMixin.class.getResourceAsStream(
-                                            "/assets/astralis-recode/icon.png"));
-                    callbackInfo.cancel();
+        try {
+            int platform = GLFW.glfwGetPlatform();
+            if (platform == GLFW.GLFW_PLATFORM_COCOA) {
+                // Cocoa windows have no GLFW icon; like vanilla, set the application (Dock) icon.
+                try {
+                    if (WindowMixin.class.getResource("/assets/astralis-recode/icon.png") != null) {
+                        MacosUtil.loadIcon(
+                                () ->
+                                        WindowMixin.class.getResourceAsStream(
+                                                "/assets/astralis-recode/icon.png"));
+                        callbackInfo.cancel();
+                    }
+                } catch (Exception ignored) {
+                }
+                return;
+            }
+
+            if (platform != GLFW.GLFW_PLATFORM_WIN32 && platform != GLFW.GLFW_PLATFORM_X11) {
+                // Other platforms such as Wayland or Android cannot set window icons;
+                // leave it to vanilla.
+                return;
+            }
+
+            try (InputStream iconStream =
+                    WindowMixin.class.getResourceAsStream("/assets/astralis-recode/icon.png")) {
+                if (iconStream != null) {
+                    try (NativeImage nativeImage = NativeImage.read(iconStream);
+                            MemoryStack memoryStack = MemoryStack.stackPush(); ) {
+                        ByteBuffer pixelBuffer =
+                                MemoryUtil.memAlloc(
+                                        nativeImage.getWidth() * nativeImage.getHeight() * 4);
+                        pixelBuffer.asIntBuffer().put(nativeImage.getPixelsABGR());
+                        Buffer iconImages = GLFWImage.malloc(1, memoryStack);
+                        iconImages.position(0);
+                        iconImages.width(nativeImage.getWidth());
+                        iconImages.height(nativeImage.getHeight());
+                        iconImages.pixels(pixelBuffer);
+                        GLFW.glfwSetWindowIcon(this.handle, iconImages.position(0));
+                        MemoryUtil.memFree(pixelBuffer);
+                        callbackInfo.cancel();
+                    }
                 }
             } catch (Exception ignored) {
             }
-            return;
-        }
-
-        if (platform != GLFW.GLFW_PLATFORM_WIN32 && platform != GLFW.GLFW_PLATFORM_X11) {
-            // Other platforms such as Wayland cannot set window icons; leave it to vanilla.
-            return;
-        }
-
-        try (InputStream iconStream =
-                WindowMixin.class.getResourceAsStream("/assets/astralis-recode/icon.png")) {
-            if (iconStream != null) {
-                try (NativeImage nativeImage = NativeImage.read(iconStream);
-                        MemoryStack memoryStack = MemoryStack.stackPush(); ) {
-                    ByteBuffer pixelBuffer =
-                            MemoryUtil.memAlloc(
-                                    nativeImage.getWidth() * nativeImage.getHeight() * 4);
-                    pixelBuffer.asIntBuffer().put(nativeImage.getPixelsABGR());
-                    Buffer iconImages = GLFWImage.malloc(1, memoryStack);
-                    iconImages.position(0);
-                    iconImages.width(nativeImage.getWidth());
-                    iconImages.height(nativeImage.getHeight());
-                    iconImages.pixels(pixelBuffer);
-                    GLFW.glfwSetWindowIcon(this.handle, iconImages.position(0));
-                    MemoryUtil.memFree(pixelBuffer);
-                    callbackInfo.cancel();
-                }
-            }
-        } catch (Exception ignored) {
+        } catch (Throwable iconUnavailable) {
+            // Some GLFW builds (notably on Android launchers) lack the newer
+            // platform-query APIs. The window icon is purely cosmetic, so never
+            // let it break startup; vanilla keeps its own behaviour.
         }
     }
 }

@@ -2,6 +2,11 @@
 
 OpenAstralis is the Astralis client (version 2.2, Fabric, Minecraft 26.2), reversed from a live process back into readable, buildable Java source.
 
+> **This fork (2.2.1) is the Android-optimized build.** Windows-only, desktop-only and
+> crash-prone parts were removed or safely disabled so the client runs lighter and more
+> stable on Android launchers (FCL, PojavLauncher, Zalith), while every module, menu and
+> rendering effect stays the same. See [CHANGELOG.md](CHANGELOG.md) for the full list.
+
 **Backup / Mirror: https://deobf.su/yxzero/openastralis**
 Please bookmark and use this mirror if you can — the main git repo might get hit with a DMCA at any time!
 

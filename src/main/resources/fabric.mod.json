@@ -3,7 +3,7 @@
   "id": "astralis-recode",
   "version": "${version}",
   "name": "Astralis-Recode",
-  "description": "Astralis 2.2 for Minecraft 26.2.",
+  "description": "Astralis 2.2.1 for Minecraft 26.2 - Android optimized build.",
   "authors": ["Kawase", "Ihasedich", "Badaiim", "Cioc"],
   "license": "CC0-1.0",
   "icon": "assets/astralis-recode/icon.png",

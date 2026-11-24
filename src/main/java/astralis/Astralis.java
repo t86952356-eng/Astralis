@@ -24,8 +24,6 @@ import astralis.util.render.BlurShadowManager;
 import astralis.util.render.RenderContextHolder;
 
 import com.astralis.scripting.InstanceAccess;
-import com.cinemamod.mcef.MCEF;
-import com.cinemamod.mcef.MCEFSettings;
 import com.viaversion.viaversion.api.Via;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -103,10 +101,6 @@ public class Astralis implements InstanceAccess {
         if (initialized) return;
         ClientMetadata.load();
         GlfwPlatformSelector.initGlfwWithPlatform();
-        MCEFSettings browserSettings = MCEF.getSettings();
-        if (browserSettings.isDisableWebSecurity()) browserSettings.setDisableWebSecurity(false);
-        if (browserSettings.isBrowserPreloadEnabled())
-            browserSettings.setBrowserPreloadEnabled(false);
         renderEffects = new BlurShadowManager();
         framebufferManager = new RenderContextHolder();
         eventBus = new EventBus();

@@ -1,8 +1,6 @@
 package astralis.ui.screen;
 
 import astralis.Astralis;
-import astralis.scripting.ReloadResult;
-import astralis.scripting.ScriptManager;
 import astralis.scripting.ScriptSource;
 import astralis.ui.component.FlatUiPalette;
 import astralis.ui.component.FlatUiPaletteColors;
@@ -17,10 +15,6 @@ import astralis.util.render.font.SizedFont;
 import astralis.util.render.font.TextDrawRequest;
 
 import com.astralis.scripting.InstanceAccess;
-import com.cinemamod.mcef.MCEF;
-import com.cinemamod.mcef.MCEFBrowser;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -29,25 +23,16 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 import net.minecraft.util.Util.OS;
 
-import org.cef.browser.CefMessageRouter;
-import org.cef.browser.CefMessageRouter.CefMessageRouterConfig;
-import org.cef.callback.CefQueryCallback;
 import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public final class ScriptEditorScreen extends Screen
@@ -77,11 +62,6 @@ public final class ScriptEditorScreen extends Screen
     private boolean draggingWindow;
     private boolean draggingScrollbar;
     private boolean easyModeOpen;
-    private boolean browserMouseDown;
-    private boolean projectPushPending;
-    public MCEFBrowser browser;
-    private CefMessageRouter messageRouter;
-    private PendingScriptOverwrite pendingOverwrite;
 
     public ScriptEditorScreen(Screen screen) {
 
@@ -126,37 +106,11 @@ public final class ScriptEditorScreen extends Screen
                         : windowFractionY * (this.height - this.windowHeight);
         this.refreshSources();
         this.updateChildLayout();
-        if (this.easyModeOpen) {
-            this.ensureBrowserCreated();
-            if (this.browser != null) {
-                this.resizeBrowserToContent();
-            }
-        }
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (this.easyModeOpen) {
-            this.ensureBrowserCreated();
-            if (this.browser != null) {
-                if (this.isNotEasyModeUrl(this.browser.getURL()) && !this.browser.isLoading()) {
-
-                    this.browser.loadURL("https://docs.astralisclient.com/easy-mode/");
-                    this.projectPushPending = true;
-                } else {
-                    if (this.projectPushPending && !this.browser.isLoading()) {
-                        this.projectPushPending = false;
-                        this.sendProjectToBrowser();
-                    }
-
-                    if (this.pendingOverwrite != null
-                            && Util.getMillis() > this.pendingOverwrite.getExpiresAtMillis()) {
-                        this.pendingOverwrite = null;
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -177,34 +131,15 @@ public final class ScriptEditorScreen extends Screen
             int browserBottom = browserY + browserHeight;
 
             graphics.fill(browserX, browserY, browserRight, browserBottom, -15987182);
-            if (this.browser != null && this.browser.isTextureReady()) {
-                graphics.blit(
-                        RenderPipelines.GUI_TEXTURED,
-                        this.browser.getTextureIdentifier(),
-                        browserX,
-                        browserY,
-                        0.0F,
-                        0.0F,
-                        browserWidth,
-                        browserHeight,
-                        browserWidth,
-                        browserHeight);
-            } else {
-                Font font2 = this.font;
-                String loadingText;
-                if (MCEF.isInitialized()) {
-                    loadingText = "Loading Easy Mode…";
-                } else {
-                    loadingText = "Chromium failed to initialize";
-                }
+            Font font2 = this.font;
+            String loadingText = "Easy Mode is only available in the desktop build.";
 
-                graphics.centeredText(
-                        font2,
-                        loadingText,
-                        browserX + browserWidth / 2,
-                        browserY + browserHeight / 2 - 4,
-                        -1);
-            }
+            graphics.centeredText(
+                    font2,
+                    loadingText,
+                    browserX + browserWidth / 2,
+                    browserY + browserHeight / 2 - 4,
+                    -1);
         }
 
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
@@ -465,16 +400,6 @@ public final class ScriptEditorScreen extends Screen
                             this.getBrowserY(),
                             this.getBrowserWidth(),
                             this.getBrowserHeight())) {
-                if (this.browser == null) {
-                    return true;
-                }
-
-                this.browser.sendMousePress(
-                        this.toBrowserPixelX(event.x()),
-                        this.toBrowserPixelY(event.y()),
-                        event.button());
-                this.browser.setFocus(true);
-                this.browserMouseDown = true;
                 return true;
             } else if (this.isInside(
                     event.x(), event.y(), this.windowX, this.windowY, this.windowWidth, 28.0F)) {
@@ -509,11 +434,7 @@ public final class ScriptEditorScreen extends Screen
 
     @Override
     public boolean mouseDragged(@NonNull MouseButtonEvent event, double dragX, double dragY) {
-        if (this.browserMouseDown && event.button() == 0 && this.browser != null) {
-            this.browser.sendMouseMove(
-                    this.toBrowserPixelX(event.x()), this.toBrowserPixelY(event.y()));
-            return true;
-        } else if (this.draggingScrollbar && event.button() == 0) {
+        if (this.draggingScrollbar && event.button() == 0) {
             this.libraryList.dragScrollbar(event.y(), this.visibleSources.size());
             return true;
         } else if (this.draggingWindow && event.button() == 0) {
@@ -544,15 +465,6 @@ public final class ScriptEditorScreen extends Screen
 
     @Override
     public boolean mouseReleased(@NonNull MouseButtonEvent event) {
-        if (this.browserMouseDown && this.browser != null) {
-            this.browser.sendMouseRelease(
-                    this.toBrowserPixelX(event.x()),
-                    this.toBrowserPixelY(event.y()),
-                    event.button());
-            this.browserMouseDown = false;
-            return true;
-        }
-
         if (!this.draggingScrollbar && !this.draggingWindow) {
             return super.mouseReleased(event);
         }
@@ -564,42 +476,16 @@ public final class ScriptEditorScreen extends Screen
 
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
-        if (this.easyModeOpen
-                && this.browser != null
-                && this.isInside(
-                        mouseX,
-                        mouseY,
-                        this.getBrowserX(),
-                        this.getBrowserY(),
-                        this.getBrowserWidth(),
-                        this.getBrowserHeight())) {
-            this.browser.sendMouseMove(this.toBrowserPixelX(mouseX), this.toBrowserPixelY(mouseY));
-        }
-
         super.mouseMoved(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         this.updateChildLayout();
-        if (this.easyModeOpen
-                && this.browser != null
-                && this.isInside(
-                        mouseX,
-                        mouseY,
-                        this.getBrowserX(),
-                        this.getBrowserY(),
-                        this.getBrowserWidth(),
-                        this.getBrowserHeight())) {
-            this.browser.sendMouseWheel(
-                    this.toBrowserPixelX(mouseX), this.toBrowserPixelY(mouseY), scrollY, 0);
-            return true;
-        } else {
-            return this.libraryList.handleMouseScroll(
-                            mouseX, mouseY, scrollY, this.visibleSources.size())
-                    ? true
-                    : super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
-        }
+        return this.libraryList.handleMouseScroll(
+                        mouseX, mouseY, scrollY, this.visibleSources.size())
+                ? true
+                : super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
@@ -627,32 +513,18 @@ public final class ScriptEditorScreen extends Screen
             }
         }
 
-        if (this.easyModeOpen && this.browser != null) {
-            this.browser.sendKeyPress(event.key(), event.scancode(), event.modifiers());
-            this.browser.setFocus(true);
-            return true;
-        } else {
-            return super.keyPressed(event);
-        }
+        return super.keyPressed(event);
     }
 
     @Override
     public boolean keyReleased(@NonNull KeyEvent event) {
-        if (this.easyModeOpen && this.browser != null) {
-            this.browser.sendKeyRelease(event.key(), event.scancode(), event.modifiers());
-            return true;
-        } else {
-            return super.keyReleased(event);
-        }
+        return super.keyReleased(event);
     }
 
     @Override
     public boolean charTyped(@NonNull CharacterEvent event) {
         if (!this.easyModeOpen && this.searchBox.charTyped(event)) {
             this.filterSources();
-            return true;
-        } else if (this.easyModeOpen && this.browser != null && event.codepoint() != 0) {
-            this.browser.sendKeyTyped((char) event.codepoint(), 0);
             return true;
         } else {
             return super.charTyped(event);
@@ -675,445 +547,11 @@ public final class ScriptEditorScreen extends Screen
         return this.parentScreen instanceof PauseScreen;
     }
 
-    private void ensureBrowserCreated() {
-        if (this.browser == null && MCEF.isInitialized()) {
-            if (this.messageRouter == null) {
-
-                this.messageRouter =
-                        CefMessageRouter.create(
-                                new CefMessageRouterConfig(
-                                        "astralisEasyHostQuery", "astralisEasyHostCancel"),
-                                new ScriptEditorQueryHandler(this));
-                MCEF.getClient().getHandle().addMessageRouter(this.messageRouter);
-            }
-
-            this.browser = MCEF.createBrowser("https://docs.astralisclient.com/easy-mode/", false);
-            this.resizeBrowserToContent();
-            this.browser.setFocus(true);
-            this.projectPushPending = true;
-        }
-    }
-
-    public void handleBridgeRequest(String request, CefQueryCallback callback) {
-
-        if (request != null) {
-            int requestLength = request.length();
-
-            if (requestLength <= 2200000) {
-                String scriptName;
-                String source;
-                String projectJson;
-                boolean overwrite;
-                try {
-                    label115:
-                    {
-                        JsonObject jsonObject = JsonParser.parseString(request).getAsJsonObject();
-                        Set requestKeys = jsonObject.keySet();
-
-                        if (requestKeys.equals(
-                                Set.of(
-                                        "protocol",
-                                        "version",
-                                        "type",
-                                        "name",
-                                        "source",
-                                        "project",
-                                        "issues",
-                                        "selectedName",
-                                        "overwrite"))) {
-
-                            if ("astralis.easy-mode"
-                                    .equals(jsonObject.get("protocol").getAsString())) {
-
-                                if (jsonObject.get("version").getAsInt() == 1) {
-
-                                    if ("save-script"
-                                            .equals(jsonObject.get("type").getAsString())) {
-
-                                        scriptName =
-                                                ScriptManager.validateScriptName(
-                                                        jsonObject.get("name").getAsString());
-
-                                        source = jsonObject.get("source").getAsString();
-
-                                        JsonObject jsonObject2 =
-                                                jsonObject.getAsJsonObject("project");
-                                        Set projectKeys = jsonObject2.keySet();
-
-                                        if (projectKeys.equals(
-                                                Set.of(
-                                                        "version",
-                                                        "title",
-                                                        "category",
-                                                        "variables",
-                                                        "stacks"))) {
-
-                                            if (jsonObject2.get("version").getAsInt() == 1) {
-
-                                                if (jsonObject2.get("title").isJsonPrimitive()) {
-
-                                                    if (jsonObject2
-                                                            .getAsJsonPrimitive("title")
-                                                            .isString()) {
-
-                                                        if (!jsonObject2
-                                                                .get("title")
-                                                                .getAsString()
-                                                                .isBlank()) {
-
-                                                            int titleLength =
-                                                                    jsonObject2
-                                                                            .get("title")
-                                                                            .getAsString()
-                                                                            .length();
-
-                                                            if (titleLength <= 64) {
-
-                                                                if (jsonObject2
-                                                                        .get("category")
-                                                                        .isJsonPrimitive()) {
-
-                                                                    if (jsonObject2
-                                                                            .getAsJsonPrimitive(
-                                                                                    "category")
-                                                                            .isString()) {
-
-                                                                        Set allowedCategories =
-                                                                                Set.of(
-                                                                                        "MISC",
-                                                                                        "COMBAT",
-                                                                                        "MOVEMENT",
-                                                                                        "PLAYER",
-                                                                                        "WORLD",
-                                                                                        "VISUAL",
-                                                                                        "GHOST");
-
-                                                                        if (allowedCategories
-                                                                                .contains(
-                                                                                        jsonObject2
-                                                                                                .get(
-                                                                                                        "category")
-                                                                                                .getAsString())) {
-
-                                                                            if (jsonObject2
-                                                                                    .get(
-                                                                                            "variables")
-                                                                                    .isJsonArray()) {
-
-                                                                                int variableCount =
-                                                                                        jsonObject2
-                                                                                                .getAsJsonArray(
-                                                                                                        "variables")
-                                                                                                .size();
-
-                                                                                if (variableCount
-                                                                                        <= 128) {
-
-                                                                                    if (jsonObject2
-                                                                                            .get(
-                                                                                                    "stacks")
-                                                                                            .isJsonArray()) {
-
-                                                                                        int
-                                                                                                stackCount =
-                                                                                                        jsonObject2
-                                                                                                                .getAsJsonArray(
-                                                                                                                        "stacks")
-                                                                                                                .size();
-
-                                                                                        if (stackCount
-                                                                                                <= 32) {
-                                                                                            projectJson =
-                                                                                                    jsonObject2
-                                                                                                            .toString();
-
-                                                                                            overwrite =
-                                                                                                    jsonObject
-                                                                                                            .get(
-                                                                                                                    "overwrite")
-                                                                                                            .getAsBoolean();
-
-                                                                                            if (jsonObject
-                                                                                                    .get(
-                                                                                                            "issues")
-                                                                                                    .getAsString()
-                                                                                                    .isBlank()) {
-                                                                                                String
-                                                                                                        editingName =
-                                                                                                                this
-                                                                                                                        .editingScriptName;
-
-                                                                                                String
-                                                                                                        selectedName;
-                                                                                                if (jsonObject
-                                                                                                        .get(
-                                                                                                                "selectedName")
-                                                                                                        .isJsonNull()) {
-                                                                                                    selectedName =
-                                                                                                            null;
-                                                                                                } else {
-
-                                                                                                    selectedName =
-                                                                                                            jsonObject
-                                                                                                                    .get(
-                                                                                                                            "selectedName")
-                                                                                                                    .getAsString();
-                                                                                                }
-
-                                                                                                if (Objects
-                                                                                                        .equals(
-                                                                                                                editingName,
-                                                                                                                selectedName)) {
-                                                                                                    int
-                                                                                                            sourceBytes =
-                                                                                                                    source
-                                                                                                                            .getBytes(
-                                                                                                                                    StandardCharsets
-                                                                                                                                            .UTF_8)
-                                                                                                                            .length;
-
-                                                                                                    if (sourceBytes
-                                                                                                            <= 1048576) {
-                                                                                                        int
-                                                                                                                projectBytes =
-                                                                                                                        projectJson
-                                                                                                                                .getBytes(
-                                                                                                                                        StandardCharsets
-                                                                                                                                                .UTF_8)
-                                                                                                                                .length;
-
-                                                                                                        if (projectBytes
-                                                                                                                <= 1048576) {
-                                                                                                            String
-                                                                                                                    quotedName =
-                                                                                                                            Pattern
-                                                                                                                                    .quote(
-                                                                                                                                            scriptName);
-
-                                                                                                            if (Pattern
-                                                                                                                    .compile(
-                                                                                                                            "\\bpublic\\s+class\\s+"
-                                                                                                                                    + quotedName
-                                                                                                                                    + "\\s+extends\\s+Script\\b")
-                                                                                                                    .matcher(
-                                                                                                                            source)
-                                                                                                                    .find()) {
-                                                                                                                break
-                                                                                                                        label115;
-                                                                                                            }
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            }
-
-                                                                                            throw new IllegalArgumentException(
-                                                                                                    "Easy Mode preview is invalid or out of date.");
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        throw new IllegalArgumentException(
-                                                "Easy Mode project has an unsupported structure.");
-                                    }
-                                }
-                            }
-                        }
-
-                        throw new IllegalArgumentException("Unsupported Easy Mode bridge request.");
-                    }
-                } catch (RuntimeException e) {
-
-                    callback.failure(2, "Easy Mode did not provide a valid project.");
-                    return;
-                }
-
-                mc.execute(
-                        () ->
-                                this.saveBridgeProject(
-                                        scriptName, source, projectJson, overwrite, callback));
-                return;
-            }
-        }
-
-        callback.failure(1, "Easy Mode request is too large.");
-    }
-
-    private void saveBridgeProject(
-            String scriptName,
-            String source,
-            String projectJson,
-            boolean overwrite,
-            CefQueryCallback callback) {
-        ScriptManager scriptManager = Astralis.getInstance().getScriptManager();
-
-        try {
-            ScriptSource existingScript =
-                    scriptManager.getSources().stream()
-                            .filter(script -> script.name().equals(scriptName))
-                            .findFirst()
-                            .orElse(null);
-            if (existingScript != null && !overwrite) {
-                String revision = scriptManager.readScriptSource(scriptName).revision();
-                long nowMillis = Util.getMillis();
-
-                this.pendingOverwrite =
-                        new PendingScriptOverwrite(
-                                scriptName, source, projectJson, revision, nowMillis + 30000L);
-
-                callback.success(
-                        this.createBridgeResponse(
-                                "conflict",
-                                scriptName,
-                                scriptName
-                                        + ".java already exists. Confirm overwrite to replace it."));
-                return;
-            }
-
-            if (existingScript != null) {
-                if (this.pendingOverwrite == null
-                        || Util.getMillis() > this.pendingOverwrite.getExpiresAtMillis()
-                        || !this.pendingOverwrite.getName().equals(scriptName)
-                        || !this.pendingOverwrite.getSource().equals(source)
-                        || !this.pendingOverwrite.getProject().equals(projectJson)) {
-
-                    callback.success(
-                            this.createBridgeResponse(
-                                    "conflict",
-                                    scriptName,
-                                    "The overwrite confirmation expired. Try saving again."));
-                    return;
-                }
-
-                scriptManager.overwriteScript(
-                        scriptName, source, projectJson, this.pendingOverwrite.getRevision());
-            } else {
-                scriptManager.createScript(scriptName, source, projectJson);
-            }
-
-            this.pendingOverwrite = null;
-            this.editingScriptName = scriptName;
-            this.selectedScriptName = scriptName;
-            ReloadResult reloadResult = scriptManager.reload();
-            String statusText;
-            switch (ScriptEditorScreenSwitchMap.reloadResultOrdinals[reloadResult.ordinal()]) {
-                case 1:
-                    statusText = scriptName + " saved and loaded.";
-                    break;
-                case 2:
-                    statusText = scriptName + " saved; reload queued.";
-                    break;
-                case 3:
-                    statusText = scriptName + " saved with load errors.";
-                    break;
-                case 4:
-                    statusText = scriptName + " saved but did not compile.";
-                    break;
-                case 5:
-                    statusText = scriptName + " saved; reload failed.";
-                    break;
-                default:
-                    throw new MatchException(null, null);
-            }
-
-            this.statusMessage = statusText;
-            this.refreshSources();
-
-            callback.success(this.createBridgeResponse("saved", scriptName, this.statusMessage));
-        } catch (IOException | RuntimeException e) {
-
-            Astralis.LOGGER.warn("Could not save Easy Mode script {}", scriptName, e);
-
-            String errorMessage;
-            if (e.getMessage() != null) {
-                errorMessage = e.getMessage();
-            } else {
-
-                errorMessage = "Could not save the Easy Mode script.";
-            }
-
-            callback.success(this.createBridgeResponse("error", scriptName, errorMessage));
-        }
-    }
-
-    private String createBridgeResponse(String status, String scriptName, String message) {
-        JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("protocol", "astralis.easy-mode");
-
-        jsonObject.addProperty("version", 1);
-
-        jsonObject.addProperty("status", status);
-
-        jsonObject.addProperty("message", message);
-
-        jsonObject.addProperty("name", scriptName);
-        return jsonObject.toString();
-    }
-
-    private void sendProjectToBrowser() {
-        if (this.browser != null && !this.isNotEasyModeUrl(this.browser.getURL())) {
-            JsonObject jsonObject = new JsonObject();
-
-            jsonObject.addProperty("protocol", "astralis.easy-mode");
-
-            jsonObject.addProperty("version", 1);
-
-            jsonObject.addProperty("type", "open-project");
-            if (this.editingScriptName == null) {
-
-                jsonObject.add("selectedName", null);
-
-                jsonObject.add("project", null);
-            } else {
-
-                jsonObject.addProperty("selectedName", this.editingScriptName);
-
-                try {
-
-                    jsonObject.add(
-                            "project",
-                            JsonParser.parseString(
-                                    Astralis.getInstance()
-                                            .getScriptManager()
-                                            .readEasyModeProject(this.editingScriptName)
-                                            .project()));
-
-                    this.statusMessage = this.editingScriptName + " opened in Easy Mode.";
-                } catch (IOException | RuntimeException ignored) {
-
-                    jsonObject.add("project", null);
-
-                    this.statusMessage =
-                            "Handwritten Java cannot be converted to blocks. Started a new project.";
-                }
-            }
-
-            MCEFBrowser activeBrowser = this.browser;
-            String projectMessage = String.valueOf(jsonObject);
-
-            String javascript = "window.astralisEasyModeHost?.receive(" + projectMessage + ");";
-
-            activeBrowser.executeJavaScript(
-                    javascript, "https://docs.astralisclient.com/easy-mode/", 0);
-        }
-    }
-
     private void openEasyMode(String scriptName) {
         this.disposeBrowser();
         this.easyModeOpen = true;
         this.editingScriptName = scriptName;
         this.selectedScriptName = scriptName;
-        this.pendingOverwrite = null;
         String message;
         if (scriptName == null) {
 
@@ -1137,31 +575,8 @@ public final class ScriptEditorScreen extends Screen
     }
 
     private void disposeBrowser() {
-        this.browserMouseDown = false;
-        this.projectPushPending = false;
-        this.pendingOverwrite = null;
-        if (this.messageRouter != null) {
-            if (MCEF.isInitialized()) {
-                MCEF.getClient().getHandle().removeMessageRouter(this.messageRouter);
-            }
-
-            this.messageRouter.dispose();
-            this.messageRouter = null;
-        }
-
-        if (this.browser != null) {
-            this.browser.close();
-            this.browser = null;
-        }
-    }
-
-    private void resizeBrowserToContent() {
-        if (this.browser != null) {
-            this.browser.resize(
-                    Math.max(1, Math.round(this.getBrowserWidth() * mc.getWindow().getGuiScale())),
-                    Math.max(
-                            1, Math.round(this.getBrowserHeight() * mc.getWindow().getGuiScale())));
-        }
+        // The embedded browser backend was desktop-only and has been removed;
+        // there is nothing left to dispose.
     }
 
     private void reloadScripts() {
@@ -1306,52 +721,6 @@ public final class ScriptEditorScreen extends Screen
 
     private float getBrowserHeight() {
         return Math.max(1.0F, this.windowHeight - 28.0F);
-    }
-
-    private int toBrowserPixelX(double screenX) {
-        return (int) ((screenX - this.getBrowserX()) * mc.getWindow().getGuiScale());
-    }
-
-    private int toBrowserPixelY(double screenY) {
-        return (int) ((screenY - this.getBrowserY()) * mc.getWindow().getGuiScale());
-    }
-
-    public boolean isNotEasyModeUrl(String url) {
-
-        if (url == null) {
-            return true;
-        }
-
-        try {
-            URI uri = URI.create(url);
-
-            if ("https".equalsIgnoreCase(uri.getScheme()) && uri.getHost() != null) {
-                String host = uri.getHost();
-
-                if (host.equalsIgnoreCase("docs.astralisclient.com")) {
-                    if (uri.getPort() != -1) {
-                        int port = uri.getPort();
-
-                        if (port != 443) {
-                            return true;
-                        }
-                    }
-
-                    if (!"/easy-mode".equals(uri.getPath())) {
-
-                        if (!"/easy-mode/".equals(uri.getPath())) {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-            }
-
-            return true;
-        } catch (IllegalArgumentException ignored) {
-            return true;
-        }
     }
 
     private boolean isInside(

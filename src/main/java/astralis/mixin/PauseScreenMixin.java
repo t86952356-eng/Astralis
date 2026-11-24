@@ -1,6 +1,5 @@
 package astralis.mixin;
 
-import astralis.ui.screen.BrowserScreen;
 import astralis.ui.screen.FriendsScreen;
 import astralis.ui.screen.PackBrowserScreen;
 
@@ -77,16 +76,7 @@ public abstract class PauseScreenMixin extends Screen {
                                     .size(204, 20)
                                     .pos(this.width / 2 - 102, bottomY + 28)
                                     .build());
-            ((ScreenAccessor) (Object) this)
-                    .invokeAddDrawableChild(
-                            Button.builder(
-                                            Component.literal("Browser"),
-                                            button4 ->
-                                                    this.minecraft.gui.setScreen(
-                                                            new BrowserScreen(this)))
-                                    .size(204, 20)
-                                    .pos(this.width / 2 - 102, bottomY + 52)
-                                    .build());
+            // The in-game CEF browser (MCEF) was desktop-only and has been removed.
         }
     }
 }

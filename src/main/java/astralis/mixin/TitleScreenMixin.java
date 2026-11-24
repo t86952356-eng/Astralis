@@ -6,7 +6,6 @@ import astralis.module.impl.Theme;
 import astralis.ui.component.SapphireScreen;
 import astralis.ui.hud.TitleLogoRenderer;
 import astralis.ui.screen.AltManagerScreen;
-import astralis.ui.screen.BrowserScreen;
 import astralis.ui.screen.FriendsScreen;
 import astralis.ui.screen.PackBrowserScreen;
 import astralis.util.render.Render2DContext;
@@ -36,12 +35,9 @@ public class TitleScreenMixin extends Screen implements SapphireScreen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void addMenuButtons(CallbackInfo callbackInfo) {
-        this.addRenderableWidget(
-                Button.builder(
-                                Component.literal("Browser"),
-                                button -> this.minecraft.gui.setScreen(new BrowserScreen(this)))
-                        .bounds(this.width - 105, this.height - 107, 100, 20)
-                        .build());
+        // The in-game CEF browser was a desktop-only (MCEF) feature and has been
+        // removed; the title screen keeps the Social, Pack Browser and Alt Manager
+        // buttons that work everywhere.
         this.addRenderableWidget(
                 Button.builder(
                                 Component.literal("Social"),

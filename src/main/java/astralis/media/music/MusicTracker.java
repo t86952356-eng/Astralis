@@ -337,11 +337,22 @@ public class MusicTracker implements InstanceAccess {
 
         if (this.pollTimer.hasPassed(500L) && this.polling.compareAndSet(false, true)) {
             this.pollTimer.reset();
+
+            // The media-session backends are Windows (SMTC), macOS (Spotify) and
+            // desktop-Linux DBus. Skip polling entirely when none of those can
+            // exist (for example on Android) instead of spawning doomed
+            // `dbus-send` processes every 500 ms.
+            String osName = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+            if (!osName.contains("win")
+                    && !osName.contains("mac")
+                    && System.getenv("DBUS_SESSION_BUS_ADDRESS") == null) {
+                this.polling.set(false);
+                return;
+            }
+
             this.pollExecutor.execute(
                     () -> {
                         try {
-
-                            String osName = System.getProperty("os.name").toLowerCase(Locale.ROOT);
 
                             if (osName.contains("win")) {
                                 this.pollWindows();
